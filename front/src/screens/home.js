@@ -1,53 +1,4 @@
 
-// import React, { useState, useEffect } from "react";
-// import axios from 'axios';
-// function Home() {
-//   const [getCountry, setGetCountry] = useState([]);   
-//   const [isLoading, setIsLoading] = useState(true);
-//   const [currentPage, setCurrentPage] = useState([1]);  
-//   const [countriesPerPage, setcountriesPerPage] = useState([5]);  
-
-//   useEffect(() => {
-//       axios.get('http://localhost:3001/rest-countries-v1/')
-//       .then(response => {
-//         setGetCountry(response.data);
-//         for (var i=0 ; i < response.data.length ; i++)
-//         {
-//           var value = this.state.todos.concat(response.data[i].name);
-//           setGetCountry(value)
-//         }
-//       })
-//       .catch(error => {
-//         console.log(error);
-//       });
-//   }, []);
-
-//   handleClick = (event) => {
-//     setCurrentPage(Number(event.target.id))
-//   }
-
-//   return (
-//     <div>
-
-//       {getCountry.length !== 0}
-
-//       {getCountry.map((c, index) => (
-//         <div key={index}>
-//               <div>
-//                 <h2 style={{ textDecoration: "Underline" }}>
-//                   {c.name}
-//                 </h2>
-//                 {/* <p>{c.code}</p> */}
-//               </div>
-           
-//         </div>
-//       ))}
-//     </div>
-//   );
-// }
-
-// export default Home;
-
 import React, { Component } from "react";
 import axios from 'axios';
 class Home extends React.Component {
@@ -57,21 +8,20 @@ class Home extends React.Component {
       countries: [],
       currentPage: 1,
       countriesPerPage: 10,
-      searchValue:null,
-      searchedCountry:null
+      searchValue: null,
+      searchedCountry: null
     };
     this.handleClick = this.handleClick.bind(this);
     axios.get('http://localhost:3001/rest-countries-v1/')
-          .then(response => {
-            for (var i=0 ; i < response.data.length ; i++)
-            {
-              var value = this.state.countries.concat(response.data[i].name);
-              this.setState({ countries: value })
-            }
-          })
-          .catch(error => {
-            console.log(error);
-          });
+      .then(response => {
+        for (var i = 0; i < response.data.length; i++) {
+          var value = this.state.countries.concat(response.data[i].name);
+          this.setState({ countries: value })
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
 
   }
 
@@ -81,26 +31,26 @@ class Home extends React.Component {
     });
   }
 
-  searchSpace=(e)=>{
+  searchSpace = (e) => {
     this.setState({
       [e.target.name]: e.target.value,
     });
   }
 
-  searchCountry=(e)=>{
+  searchCountry = (e) => {
     axios.get(`http://localhost:3001/rest-countries-v1/${this.state.searchValue}`)
-    .then(response => {
-      this.setState({ searchedCountry: response.data.name })
-    })
-    .catch(error => {
-      console.log(error);
-    });
+      .then(response => {
+        this.setState({ searchedCountry: response.data.name })
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
-  
+
 
   render() {
     const { countries, currentPage, countriesPerPage } = this.state;
-console.log(this.state.searchValue)
+    console.log(this.state.searchValue)
     // Logic for displaying countries
     const indexOfLastCountry = currentPage * countriesPerPage;
     const indexOfFirstCountry = indexOfLastCountry - countriesPerPage;
@@ -118,8 +68,8 @@ console.log(this.state.searchValue)
 
     const renderPageNumbers = pageNumbers.map(number => {
       return (
-       <span
-       className="mr-3"
+        <span
+          className="mr-3"
           key={number}
           id={number}
           onClick={this.handleClick}
@@ -131,11 +81,11 @@ console.log(this.state.searchValue)
 
     return (
       <div>
-        
-  <input type="text" className="ml-5 mt-5" placeholder="Enter country name" name="searchValue" onChange={(e)=>this.searchSpace(e)} />
-  <button type="button" class="btn btn-primary btn-sm" onClick={(e)=>this.searchCountry(e)}>Search</button>
 
-  {/* {this.state.searchedCountry !==null ? this.state.searchedCountry : "not found"} */}
+        <input type="text" className="ml-5 mt-5" placeholder="Enter country name" name="searchValue" onChange={(e) => this.searchSpace(e)} />
+        <button type="button" class="btn btn-primary btn-sm" onClick={(e) => this.searchCountry(e)}>Search</button>
+
+        {/* {this.state.searchedCountry !==null ? this.state.searchedCountry : "not found"} */}
         <h5 className="mt-5">
           {renderCountries}
         </h5>
