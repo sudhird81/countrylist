@@ -8,29 +8,20 @@ import { connect } from "react-redux";
 const history = createBrowserHistory();
 
 class BaseRouter extends React.Component {
-
   render() {
     return (
-      <>
+    <React.Fragment>
       <Header />
       <Router history={history}>
         <Redirector />
-
         <Switch>
           <Route exact path="/" component={Home} /> 
         </Switch>
-     
       </Router>
-   </>
+    </React.Fragment>
     );
   }
 }
-
-const mapStateToProps = state => {
-  return {
-    // isAuthenticated: state.auth.token
-  };
-};
 export default connect(null, null)(BaseRouter);
 
 

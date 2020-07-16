@@ -1,100 +1,118 @@
+import React, { useState, useEffect } from "react";
+import { MDBRow, MDBCol } from "mdbreact";
+import axios from "axios";
+function Home() {
+  const [countries, setCountries] = useState([]);
+  const [currentPage, setCurrentPage] = useState([1]);
+  const [countriesPerPage, setCountriesPerPage] = useState("10");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
 
-import React, { Component } from "react";
-import axios from 'axios';
-class Home extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      countries: [],
-      currentPage: 1,
-      countriesPerPage: 10,
-      searchValue: null,
-      searchedCountry: null
-    };
-    this.handleClick = this.handleClick.bind(this);
-    axios.get('http://localhost:3001/rest-countries-v1/')
+  // Fetching the country list from the api 
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/rest-countries-v1/")
       .then(response => {
         for (var i = 0; i < response.data.length; i++) {
-          var value = this.state.countries.concat(response.data[i].name);
-          this.setState({ countries: value })
+          setCountries(state => [...state, response.data[i].name]);
+          setSearchResults(state => [...state, response.data[i].name]);
         }
       })
       .catch(error => {
         console.log(error);
       });
+  }, []);
 
-  }
+  const handleClick = event => {
+    setCurrentPage(Number(event.target.id));
+  };
 
-  handleClick(event) {
-    this.setState({
-      currentPage: Number(event.target.id)
-    });
-  }
+  // Setting the indexing of the countries
 
-  searchSpace = (e) => {
-    this.setState({
-      [e.target.name]: e.target.value,
-    });
-  }
+  const indexOfLastCountry = currentPage * countriesPerPage;
+  const indexOfFirstCountry = indexOfLastCountry - countriesPerPage;
+  const currentCountries = searchResults.slice(
+    indexOfFirstCountry,
+    indexOfLastCountry
+  );
 
-  searchCountry = (e) => {
-    axios.get(`http://localhost:3001/rest-countries-v1/${this.state.searchValue}`)
-      .then(response => {
-        this.setState({ searchedCountry: response.data.name })
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }
-
-
-  render() {
-    const { countries, currentPage, countriesPerPage } = this.state;
-    console.log(this.state.searchValue)
-    // Logic for displaying countries
-    const indexOfLastCountry = currentPage * countriesPerPage;
-    const indexOfFirstCountry = indexOfLastCountry - countriesPerPage;
-    const currentCountries = countries.slice(indexOfFirstCountry, indexOfLastCountry);
-
-    const renderCountries = currentCountries.map((value, index) => {
-      return <p className="ml-5" key={index}>{value}</p>;
-    });
-
-    // Logic for displaying page numbers
-    const pageNumbers = [];
-    for (let i = 1; i <= Math.ceil(countries.length / countriesPerPage); i++) {
-      pageNumbers.push(i);
-    }
-
-    const renderPageNumbers = pageNumbers.map(number => {
-      return (
-        <span
-          className="mr-3"
-          key={number}
-          id={number}
-          onClick={this.handleClick}
-        >
-          {number}
-        </span>
-      );
-    });
-
+  const renderCountries = currentCountries.map((value, index) => {
     return (
-      <div>
-
-        <input type="text" className="ml-5 mt-5" placeholder="Enter country name" name="searchValue" onChange={(e) => this.searchSpace(e)} />
-        <button type="button" class="btn btn-primary btn-sm" onClick={(e) => this.searchCountry(e)}>Search</button>
-
-        {/* {this.state.searchedCountry !==null ? this.state.searchedCountry : "not found"} */}
-        <h5 className="mt-5">
-          {renderCountries}
-        </h5>
-        <div className="ml-5">
-          {renderPageNumbers}
-        </div>
-      </div>
+      <ul key={index}>
+        <li> {value}</li>
+      </ul>
     );
+  });
+
+  // Displaying the page numbers
+  const pageNumbers = [];
+  for (
+    let i = 1;
+    i <= Math.ceil(searchResults.length / countriesPerPage);
+    i++
+  ) {
+    pageNumbers.push(i);
   }
+
+  const handleChange = event => {
+    setSearchTerm(event.target.value);
+
+    setSearchResults(
+      countries.filter(person =>
+        person.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  };
+
+  // Configuring the limit of the countries name
+  const onHandleChangeValue = event => {
+    setCountriesPerPage(event.target.value);
+  };
+
+  // Displaying page number
+  const renderPageNumbers = pageNumbers.map(number => {
+    return (
+      <span className="pr-3" key={number} id={number} onClick={handleClick}>
+        {number}
+      </span>
+    );
+  });
+
+  return (
+    <React.Fragment>
+      <MDBRow className="ml-0 mr-0">
+        <MDBCol md="6" lg="6" sm="12">
+          <div class="md-form mt-0">
+            <input
+              class="form-control"
+              type="text"
+              value={searchTerm}
+              onChange={handleChange}
+              placeholder="Search"
+              aria-label="Search"
+            />
+          </div>
+          <h5 className="mt-5">{renderCountries}</h5>
+          <h5 className="text-break ml-3">{renderPageNumbers}</h5>
+        </MDBCol>
+
+        <MDBCol md="6" lg="6" sm="12" className="word-wrap">
+          <div className="form-group mt-2">
+            <select
+              class="form-control"
+              value={countriesPerPage}
+              onChange={onHandleChangeValue}
+              id="exampleFormControlSelect1"
+            >
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+            </select>
+          </div>
+        </MDBCol>
+      </MDBRow>
+    </React.Fragment>
+  );
 }
 
 export default Home;
