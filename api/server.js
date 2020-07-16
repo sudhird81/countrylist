@@ -1,21 +1,16 @@
-// load up the express framework and body-parser helper
+// Created server with express
 const express = require("express");
 const bodyParser = require("body-parser");
+// To resolve error with cross origin
 const cors = require('cors');
-// create an instance of express to serve our end points
+// An instance of express to serve our end points
 const app = express();
 app.use(cors());
-const port = process.env.PORT || 3001;
-// we'll load up node's built in file system helper library here
-// (we'll be using this later to serve our JSON files
+const port = process.env.PORT || 88;
 const fs = require("fs");
-
-// configure our express instance with some body-parser settings
-// including handling JSON data
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // this is where we'll handle our various routes from
 require("./routes/routes.js")(app, fs);
-
 app.listen(port);
