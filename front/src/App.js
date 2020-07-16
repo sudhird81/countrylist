@@ -68,6 +68,8 @@ function Home() {
         person.toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
+    setCurrentPage(1)
+    setActive(1)
   };
 
   // Configuring the limit of the countries name
