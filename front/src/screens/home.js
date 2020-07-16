@@ -11,7 +11,7 @@ function Home() {
   // Fetching the country list from the api 
   useEffect(() => {
     axios
-      .get("http://localhost:3001/rest-countries-v1/")
+      .get("http://3.87.165.124:88/rest-countries-v1/")
       .then(response => {
         for (var i = 0; i < response.data.length; i++) {
           setCountries(state => [...state, response.data[i].name]);
@@ -73,7 +73,7 @@ function Home() {
   // Displaying page number
   const renderPageNumbers = pageNumbers.map(number => {
     return (
-      <span className = {active == number ? "pr-3 active" : "pr-3"} key={number} id={number} onClick={handleClick}>
+      <span className={active == number ? "pr-3 active" : "pr-3"} key={number} id={number} onClick={handleClick}>
         {number}
       </span>
     );
@@ -83,9 +83,9 @@ function Home() {
     <React.Fragment>
       <MDBRow className="ml-0 mr-0">
         <MDBCol md="6" lg="6" sm="12">
-          <div class="md-form mt-0">
+          <div className="md-form mt-0">
             <input
-              class="form-control"
+              className="form-control"
               type="text"
               value={searchTerm}
               onChange={handleChange}
@@ -99,7 +99,7 @@ function Home() {
         <MDBCol md="6" lg="6" sm="12" className="word-wrap">
           <div className="form-group mt-2">
             <select
-              class="form-control"
+              className="form-control"
               value={countriesPerPage}
               onChange={onHandleChangeValue}
               id="exampleFormControlSelect1"
@@ -113,7 +113,7 @@ function Home() {
       </MDBRow>
       <MDBRow className="mr-0 mt-5">
         <MDBCol>
-        <h5 className="text-break ml-3">{renderPageNumbers}</h5>
+          <h5 className="text-break ml-3">{renderPageNumbers}</h5>
         </MDBCol>
       </MDBRow>
     </React.Fragment>
