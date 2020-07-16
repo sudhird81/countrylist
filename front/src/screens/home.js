@@ -7,7 +7,7 @@ function Home() {
   const [countriesPerPage, setCountriesPerPage] = useState("10");
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-
+  const [active, setActive] = useState(1);
   // Fetching the country list from the api 
   useEffect(() => {
     axios
@@ -25,6 +25,7 @@ function Home() {
 
   const handleClick = event => {
     setCurrentPage(Number(event.target.id));
+    setActive(event.target.id)
   };
 
   // Setting the indexing of the countries
@@ -72,7 +73,7 @@ function Home() {
   // Displaying page number
   const renderPageNumbers = pageNumbers.map(number => {
     return (
-      <span className="pr-3" key={number} id={number} onClick={handleClick}>
+      <span className = {active == number ? "pr-3 active" : "pr-3"} key={number} id={number} onClick={handleClick}>
         {number}
       </span>
     );
@@ -93,7 +94,6 @@ function Home() {
             />
           </div>
           <h5 className="mt-5">{renderCountries}</h5>
-          <h5 className="text-break ml-3">{renderPageNumbers}</h5>
         </MDBCol>
 
         <MDBCol md="6" lg="6" sm="12" className="word-wrap">
@@ -109,6 +109,11 @@ function Home() {
               <option value="20">20</option>
             </select>
           </div>
+        </MDBCol>
+      </MDBRow>
+      <MDBRow className="mr-0 mt-5">
+        <MDBCol>
+        <h5 className="text-break ml-3">{renderPageNumbers}</h5>
         </MDBCol>
       </MDBRow>
     </React.Fragment>
