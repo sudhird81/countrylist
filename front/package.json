@@ -17,7 +17,8 @@
     "react-scripts": "3.4.0",
     "react-test-renderer": "^16.13.1",
     "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "react-js-pagination": "^3.0.3"
   },
   "scripts": {
     "start": "PORT=99 react-scripts start",

@@ -2,47 +2,39 @@ import React, { useState, useEffect } from "react";
 import { MDBRow, MDBCol } from "mdbreact";
 import Header from "./components/header";
 import axios from "axios";
+import Pagination from "react-js-pagination";
 function Home() {
   const [countries, setCountries] = useState([]);
-  const [currentPage, setCurrentPage] = useState([1]);
-  const [countriesPerPage, setCountriesPerPage] = useState("10");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [active, setActive] = useState(1);
-  // Fetching the country list from the api 
+  const [countriesPerPage, setCountriesPerPage] = useState(5);
+  const [activePage, setActivePage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [searchKeyword, setSearchKeyword] = useState("");
+  // Fetching the country list from the api
   useEffect(() => {
     axios
-      .get("http://3.87.165.124:88/rest-countries-v1/", {
-        headers: {
-          'authorization': 'dsds93432$#%^#$#Dfdfd$%@#@'
+      .get(
+        `http://3.87.165.124:88/rest-countries-v1/?page=${activePage}&limit=${countriesPerPage}&country=${searchKeyword}`,
+        {
+          headers: {
+            Authorization: "dsds93432$#%^#$#Dfdfd$%@#@"
+          }
         }
-      })
+      )
       .then(response => {
-        for (let i = 0; i < response.data.length; i++) {
-          setCountries(state => [...state, response.data[i].name]);
-          setSearchResults(state => [...state, response.data[i].name]);
+        setCountries([]);
+        if (response.data.data.data) {
+          for (let i = 0; i < response.data.data.data.length; i++) {
+            setCountries(state => [...state, response.data.data.data[i].name]);
+          }
         }
+        setTotalCount(response.data.total);
       })
       .catch(error => {
         console.log(error);
       });
-  }, []);
+  }, [countriesPerPage, activePage, searchKeyword]);
 
-  const handleClick = event => {
-    setCurrentPage(Number(event.target.id));
-    setActive(event.target.id)
-  };
-
-  // Setting the indexing of the countries
-
-  const indexOfLastCountry = currentPage * countriesPerPage;
-  const indexOfFirstCountry = indexOfLastCountry - countriesPerPage;
-  const currentCountries = searchResults.slice(
-    indexOfFirstCountry,
-    indexOfLastCountry
-  );
-
-  const renderCountries = currentCountries.map((value, index) => {
+  const renderCountries = countries.map((value, index) => {
     return (
       <ul key={index}>
         <li> {value}</li>
@@ -50,26 +42,11 @@ function Home() {
     );
   });
 
-  // Displaying the page numbers
-  const pageNumbers = [];
-  for (
-    let i = 1;
-    i <= Math.ceil(searchResults.length / countriesPerPage);
-    i++
-  ) {
-    pageNumbers.push(i);
-  }
-
   const handleChange = event => {
-    setSearchTerm(event.target.value);
-
-    setSearchResults(
-      countries.filter(person =>
-        person.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
-    setCurrentPage(1)
-    setActive(1)
+    setSearchKeyword(event.target.value);
+    if (event.target.value === "") {
+      setSearchKeyword("");
+    }
   };
 
   // Configuring the limit of the countries name
@@ -77,14 +54,9 @@ function Home() {
     setCountriesPerPage(event.target.value);
   };
 
-  // Displaying page number
-  const renderPageNumbers = pageNumbers.map(value => {
-    return (
-      <span className={parseInt(active) === parseInt(value) ? "pr-3 active" : "pr-3"} key={value} id={value} onClick={handleClick}>
-        {value}
-      </span>
-    );
-  });
+  const handlePageChange = number => {
+    setActivePage(number);
+  };
 
   return (
     <React.Fragment>
@@ -95,7 +67,7 @@ function Home() {
             <input
               className="form-control"
               type="text"
-              value={searchTerm}
+              value={searchKeyword}
               onChange={handleChange}
               placeholder="Search"
               aria-label="Search"
@@ -110,7 +82,8 @@ function Home() {
               className="form-control"
               value={countriesPerPage}
               onChange={onHandleChangeValue}
-              id="exampleFormControlSelect1"
+              name="search"
+              id="search"
             >
               <option value="5">5</option>
               <option value="10">10</option>
@@ -120,9 +93,17 @@ function Home() {
         </MDBCol>
       </MDBRow>
       <MDBRow className="mr-0 mt-5">
-        <MDBCol>
-          <h5 className="text-break ml-3">{renderPageNumbers}</h5>
-        </MDBCol>
+        <div className="ml-5">
+          <Pagination
+            activePage={activePage}
+            itemsCountPerPage={countriesPerPage}
+            totalItemsCount={totalCount}
+            pageRangeDisplayed={5}
+            itemClass="page-item"
+            linkClass="page-link"
+            onChange={handlePageChange}
+          />
+        </div>
       </MDBRow>
     </React.Fragment>
   );
