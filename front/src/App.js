@@ -105,6 +105,7 @@ function Home() {
             linkClass="page-link"
             onChange={handlePageChange}
           />
+             <input type="hidden" id="totalcount" name="totalcount" value={totalCount}/>
         </div>
       </MDBRow>
     </React.Fragment>
