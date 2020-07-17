@@ -20,6 +20,7 @@ function Home() {
           }
         }
       )
+
       .then(response => {
         setCountries([]);
         for (let i = 0; i < response.data.data.data.length; i++) {
