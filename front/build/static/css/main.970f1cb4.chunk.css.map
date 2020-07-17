@@ -1,0 +1,1 @@
+{"version":3,"sources":["index.css"],"names":[],"mappings":"AAAA,YACI,4BAA6B,CAC7B,kBAAmB,CACnB,UACA,CACJ,QACI,kBACA","file":"main.970f1cb4.chunk.css","sourcesContent":[".pr-3, .px-3 {\n    padding-right: 1rem!important;\n    background: #efefef;\n    margin: 5px;\n    }\n.active{\n    background: #4285F4;\n    }"]}
