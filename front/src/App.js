@@ -5,7 +5,7 @@ import axios from "axios";
 import Pagination from "react-js-pagination";
 function Home() {
   const [countries, setCountries] = useState([]);
-  const [countriesPerPage, setCountriesPerPage] = useState(5);
+  const [countriesPerPage, setCountriesPerPage] = useState(10);
   const [activePage, setActivePage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -22,10 +22,8 @@ function Home() {
       )
       .then(response => {
         setCountries([]);
-        if (response.data.data.data) {
-          for (let i = 0; i < response.data.data.data.length; i++) {
-            setCountries(state => [...state, response.data.data.data[i].name]);
-          }
+        for (let i = 0; i < response.data.data.data.length; i++) {
+          setCountries(state => [...state, response.data.data.data[i].name]);
         }
         setTotalCount(response.data.total);
       })
@@ -42,16 +40,17 @@ function Home() {
     );
   });
 
-  const handleChange = event => {
+  const handleSearchChange = event => {
     setSearchKeyword(event.target.value);
     if (event.target.value === "") {
       setSearchKeyword("");
     }
+    setActivePage(1);
   };
 
   // Configuring the limit of the countries name
-  const onHandleChangeValue = event => {
-    setCountriesPerPage(event.target.value);
+  const onChangeLimitValue = event => {
+    setCountriesPerPage(parseInt(event.target.value));
   };
 
   const handlePageChange = number => {
@@ -68,9 +67,11 @@ function Home() {
               className="form-control"
               type="text"
               value={searchKeyword}
-              onChange={handleChange}
+              onChange={handleSearchChange}
               placeholder="Search"
               aria-label="Search"
+              name="search"
+              id="search"
             />
           </div>
           <h5 className="mt-5">{renderCountries}</h5>
@@ -81,9 +82,9 @@ function Home() {
             <select
               className="form-control"
               value={countriesPerPage}
-              onChange={onHandleChangeValue}
-              name="search"
-              id="search"
+              onChange={onChangeLimitValue}
+              name="limit"
+              id="limit"
             >
               <option value="5">5</option>
               <option value="10">10</option>
