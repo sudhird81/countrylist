@@ -19,9 +19,3 @@ it('Toal count must be returned from the api', () => {
   //Limit dropdown field should be present
   expect(wrapper.find('input#totalcount')).toHaveLength(1);
 });
-
-// it('should handle the value of limit change', () => {
-//    //Checking the selected value for limit
-//   wrapper.find('#limit').simulate('change');
-//    expect(wrapper.find('option').number());
-// });
