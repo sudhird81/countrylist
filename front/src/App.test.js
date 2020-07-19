@@ -7,23 +7,29 @@ import axios from "axios";
 import { fetchData, API } from './fetchdata';
 
 const wrapper = shallow(<App />);
+
+//Case 1
 it('should have input for Search', () => {
   //Search input field should be present
   expect(wrapper.find('input#search')).toHaveLength(1);
 });
 
+//Case 2
 it('should have dropdown for limit', () => {
   //Limit dropdown field should be present
   expect(wrapper.find('select#limit')).toHaveLength(1);
 });
 
+//Case 3
 it('Toal count must be returned from the api', () => {
   //Limit dropdown field should be present
   expect(wrapper.find('input#totalcount')).toHaveLength(1);
 });
 
+
 jest.mock('axios');
 describe('fetchData', () => {
+  //Case 4
   it('fetches countries data from an API with limit of 10 on Page 1 with Search keyword - ind', async () => {
     const data = {
       headers: {
@@ -36,7 +42,7 @@ describe('fetchData', () => {
       `${API}/?page=1&limit=10&country=ind`,
     );
   });
-
+  //Case 5
   it('fetches erroneously countries data from an API', async () => {
     const errorMessage = 'Network Error';
 
